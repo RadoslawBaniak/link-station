@@ -21,11 +21,12 @@ def coordinate_distance(A, B):
     # return the distance
     return distance
 
+
 # calculate the most suitable link
-
-
 def most_suitable_link(point, stations):
 
+    best_links = []  # store best links
+    no_links = []
     # loop through the stations
     for s in stations:
         # get the x,y and r
@@ -38,15 +39,27 @@ def most_suitable_link(point, stations):
 
         # calculate power for each station at that point
         power = round((station_reach - distance) ** 2, 2)
-        print()  # print an empty line
 
         # check the most suitable link  with the given conditions and print appropriate results
-        if distance > station_reach or power == 0:
-            print("Best Link Station for {},{} is {},{} with power {}"
-                  .format(point[0], point[1], station_x_coord, station_y_coord, power))
+        if distance <= station_reach:
+            if(len(best_links) > 0):
+                if best_links[0][2] < power:  # pick link with more power
+                    best_links.pop()  # remove the current link  if its power is greater than the current power
+                    best_links.append(
+                        ((point[0], point[1]), s, power))  # add the new link to best_links list
+            else:
+                best_links.append(
+                    ((point[0], point[1]), s, power))  # if the list was initially empty update
         else:
-            print("No link Station reach within reach for point {},{}"
-                  .format(point[0], point[1]))
+            no_links.append((point[0], point[1]))
+
+    if len(best_links) > 0:  # if we have best links, print them
+        for b in best_links:
+            print("Best Link Station for {},{} is {},{} with power {}"
+                  .format(b[0][0], b[0][1], b[1][0], b[1][1], b[2]))
+    else:
+        print("No link Station reach within reach for point {},{}".format(
+            no_links[0][0], no_links[0][1]))  # else show no link stations in reach
 
 
 if __name__ == "__main__":
@@ -64,5 +77,6 @@ if __name__ == "__main__":
     Running the Program.
     Make sure you have python 3 installed and available globbally in the system
     Open a terminal/cmd and run `python3 most_suitable_link_station.py`
-    That`s it.
+    Alternatively, if running in IDLE, press Run Module F5 which will return results in interactive shell.
 """
+
